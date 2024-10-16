@@ -2,9 +2,9 @@
 - hosts: all
   become: yes
   tasks:
-    - name: Create a support user
+    - name: Create a suporte user
       ansible.builtin.user:
-        name: Suporte
+        name: suporte
         comment: Suporte
         uid: 5000
         group: root

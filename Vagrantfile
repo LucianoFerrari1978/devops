@@ -1,5 +1,11 @@
 Vagrant.configure("2") do |config|
+
   config.vm.provision "shell", path: "script.sh"
+
+    config.vm.provision "ansible_local" do |ansible|
+      ansible.playbook = "playbook.yml"
+      ansible.install_mode = "pip"
+    end
 
   config.vm.define "controle" do |controle|
     controle.vm.box = "shekeriev/debian-11"
@@ -10,6 +16,7 @@ Vagrant.configure("2") do |config|
       vb.name = "controle"
       vb.memory = "2048"
       vb.cpus = 2
+      vb.gui = true
     end
   end
   
@@ -22,6 +29,7 @@ Vagrant.configure("2") do |config|
       vb.name = "web"
       vb.memory = "512"
       vb.cpus = 2
+      vb.gui = true
     end
   end
 
@@ -35,8 +43,23 @@ Vagrant.configure("2") do |config|
       vb.name = "db"
       vb.memory = "512"
       vb.cpus = 2
+      vb.gui = true
     end
   end
 
+
+  config.vm.define "puppet" do |puppet|
+    puppet.vm.box = "shekeriev/debian-11"
+    puppet.vm.hostname = "puppet"
+#    puppet.vm.network "private_network", ip: "172.17.177.102", virtualbox__intnet: "mynetwork"
+    puppet.vm.network "private_network", ip: "172.17.177.200", name: "vboxnet1"
+    puppet.vm.provider "vitualbox" do |vb|
+      vb.name = "puppet"
+      vb.memory = "4096"
+      vb.cpus = 2
+      vb.gui = true
+    end
+    puppet.vm.provision "shell", inline: "echo 'nameserver 1.1.1.1' > /etc/resolv.conf"
+  end
 
 end
